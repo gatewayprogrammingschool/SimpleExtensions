@@ -3,7 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{14A8D0AB-AB7A-4689-B29E-02A6AA35130D}"
+	ProjectSection(SolutionItems) = preProject
+		paket.dependencies = paket.dependencies
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPS.SimpleExtensions", "GPS.SimpleExtensions\GPS.SimpleExtensions.csproj", "{31BB5AA7-287D-4ABA-BC5C-01055055ED19}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3385A313-1E8F-4C1A-A5EB-D7899166F4BF}"
+	ProjectSection(SolutionItems) = preProject
+		..\Deploy.ps1 = ..\Deploy.ps1
+		ReleaseNotes.txt = ReleaseNotes.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
