@@ -27,10 +27,26 @@ namespace GPS.SimpleExtensions
         /// <param name="message">The message to display if the value is null.</param>
         /// <param name="name">The name of the parameter being tested.</param>
         [DebuggerNonUserCode]
-        public static void AssertParameterNotNull(
-            this object value, string message, string name)
+        public static void AssertParameterNotNull<TValue>(
+            this TValue value, string message, string name)
+            where TValue : class
         {
             if (value == null)
+                throw new ArgumentNullException(name, message);
+        }
+
+        /// <summary>
+        /// Throws an <see cref="System.ArgumentNullException"/> 
+        /// if the the value is default.
+        /// </summary>
+        /// <param name="value">The value to test.</param>
+        /// <param name="message">The message to display if the value is default.</param>
+        /// <param name="name">The name of the parameter being tested.</param>
+        [DebuggerNonUserCode]
+        public static void AssertParameterNotDefault<TValue>(
+            this TValue value, string message, string name)
+        {
+            if (value.Equals(default(TValue)))
                 throw new ArgumentNullException(name, message);
         }
 
@@ -45,10 +61,21 @@ namespace GPS.SimpleExtensions
         public static void AssertParameterNotEmpty(
             this string value, string message, string name)
         {
-            value.AssertParameterNotNull(message, name);
+            value?.ToCharArray().AssertNotNullOrEmpty<ArgumentException>(message, name);
+        }
 
-            if (value.IsEmpty())
-                throw new ArgumentException(message, name);
+        /// <summary>
+        /// Throws an <see cref="System.ArgumentException"/>
+        /// if the string value is empty.
+        /// </summary>
+        /// <param name="value">The value to test.</param>
+        /// <param name="message">The message to display if the value is null.</param>
+        /// <param name="name">The name of the parameter being tested.</param>
+        [DebuggerNonUserCode]
+        public static void AssertParameterNotEmpty(
+            this ICollection value, string message, string name)
+        {
+            value.AssertNotNullOrEmpty<ArgumentException>(message, name);
         }
 
         /// <summary>
@@ -62,7 +89,7 @@ namespace GPS.SimpleExtensions
         /// <param name="message">The message to display if the value is null.</param>
         [DebuggerNonUserCode]
         public static void AssertEquals<TExceptionType>(
-            this object value, object compareTo, string message)
+            this object value, object compareTo, string message = null)
             where TExceptionType : Exception
         {
             if (!value.Equals(compareTo))
@@ -73,8 +100,197 @@ namespace GPS.SimpleExtensions
                 }
 
                 var e =
-                    typeof (TExceptionType).CreateInstance<TExceptionType>(
-                        new object[] {message});
+                    typeof(TExceptionType).CreateInstance<TExceptionType>(
+                        new object[] { message });
+
+                if (e == null)
+                {
+                    throw new Exception(
+                        "Cannot instantiate the expected exception.");
+                }
+
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Throws the specified exception if the
+        /// values are equal.
+        /// </summary>
+        /// <typeparam name="TExceptionType">
+        /// The type of exception to throw.</typeparam>
+        /// <param name="value">The value to test.</param>
+        /// <param name="compareTo">The expected value.</param>
+        /// <param name="message">The message to display if the value is null.</param>
+        [DebuggerNonUserCode]
+        public static void AssertNotEquals<TExceptionType>(
+            this object value, object compareTo, string message = null)
+            where TExceptionType : Exception
+        {
+            if (value.Equals(compareTo))
+            {
+                if (message.IsNullOrEmpty())
+                {
+                    message = $"{value} does not equal expected value of {compareTo}";
+                }
+
+                var e =
+                    typeof(TExceptionType).CreateInstance<TExceptionType>(
+                        new object[] { message });
+
+                if (e == null)
+                {
+                    throw new Exception(
+                        "Cannot instantiate the expected exception.");
+                }
+
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Throws the specified exception if the
+        /// value is null.
+        /// </summary>
+        /// <typeparam name="TExceptionType">
+        /// The type of exception to throw.</typeparam>
+        /// <param name="value">The value to test.</param>
+        /// <param name="message">The message to display if the value is null.</param>
+        [DebuggerNonUserCode]
+        public static void AssertNotNull<TNullable, TExceptionType>(
+            this TNullable value, string message = null)
+            where TNullable : class
+            where TExceptionType : Exception
+        {
+            if (value == null)
+            {
+                if (message.IsNullOrEmpty())
+                {
+                    message = $"Value is null.";
+                }
+
+                var e =
+                    typeof(TExceptionType).CreateInstance<TExceptionType>(
+                        new object[] { message });
+
+                if (e == null)
+                {
+                    throw new Exception(
+                        "Cannot instantiate the expected exception.");
+                }
+
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Throws the specified exception if the
+        /// value is default.
+        /// </summary>
+        /// <typeparam name="TExceptionType">
+        /// The type of exception to throw.</typeparam>
+        /// <param name="value">The value to test.</param>
+        /// <param name="message">The message to display if the value is null.</param>
+        [DebuggerNonUserCode]
+        public static void AssertNotDefault<TValue, TExceptionType>(
+            this TValue value, string message = null)
+            where TExceptionType : Exception
+        {
+            if (value.Equals(default(TValue)))
+            {
+                if (message.IsNullOrEmpty())
+                {
+                    message = $"Value is default.";
+                }
+
+                var e =
+                    typeof(TExceptionType).CreateInstance<TExceptionType>(
+                        new object[] { message });
+
+                if (e == null)
+                {
+                    throw new Exception(
+                        "Cannot instantiate the expected exception.");
+                }
+
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Throws the specified exception if the
+        /// <see cref="ICollection"/> is null or empty.
+        /// </summary>
+        /// <typeparam name="TExceptionType">
+        /// The type of exception to throw.</typeparam>
+        /// <param name="value">The value to test.</param>
+        /// <param name="message">The message to display if the value is null.</param>
+        [DebuggerNonUserCode]
+        public static void AssertNotNullOrEmpty<TExceptionType>(
+            this ICollection value, string message = null, string name = null)
+            where TExceptionType : Exception
+        {
+            if (value == null || value.Count == 0)
+            {
+                if (message.IsNullOrEmpty())
+                {
+                    message = $"Value is null or empty.";
+                }
+
+                if(typeof(TExceptionType).Equals(typeof(ArgumentException)))
+                {
+                    throw new ArgumentException(name, message);
+                }
+
+                if(typeof(TExceptionType).Equals(typeof(ArgumentNullException)))
+                {
+                    throw new ArgumentException(message, name);
+                }
+
+                var e =
+                    typeof(TExceptionType).CreateInstance<TExceptionType>(
+                        new object[] { message });
+
+                if (e == null)
+                {
+                    throw new Exception(
+                        "Cannot instantiate the expected exception.");
+                }
+
+                throw e;
+            }
+        }
+       
+        /// <summary>
+        /// Throws the specified exception if the
+        /// <see cref="ICollection"> does not have the minimum number of elements.
+        /// </summary>
+        /// <typeparam name="TExceptionType">
+        /// The type of exception to throw.</typeparam>
+        /// <param name="value">The value to test.</param>
+        /// <param name="minimumLength">The expected value.</param>
+        /// <param name="message">The message to display if the value is null.</param>
+        [DebuggerNonUserCode]
+        public static void AssertMinimumLength<TExceptionType>(
+            this ICollection value, long minimumLength, string message = null)
+            where TExceptionType : Exception
+        {
+            value.AssertParameterNotNull("Must supply an ICollection.", nameof(value));
+
+            if (minimumLength < 0)
+                throw new ArgumentException(
+                    nameof(minimumLength), "Minimum length must be zero or greater.");
+            
+            if (value.Count < minimumLength)
+            {
+                if (message.IsNullOrEmpty())
+                {
+                    message = $"{value.Count} is less than expected value of {minimumLength}";
+                }
+
+                var e =
+                    typeof(TExceptionType).CreateInstance<TExceptionType>(
+                        new object[] { message });
 
                 if (e == null)
                 {

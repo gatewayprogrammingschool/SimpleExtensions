@@ -1,50 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{31BB5AA7-287D-4ABA-BC5C-01055055ED19}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GPS.SimpleExtensions</RootNamespace>
-    <AssemblyName>GPS.SimpleExtensions</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
+    <PackageID>GPS.SimpleExtensions</PackageID>
+    <PackageLicenseUrl>https://github.com/gatewayprogrammingschool/SimpleExtensions/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>http://simpleextensions.gatewayprogramming.school/</PackageProjectUrl>
+    <PackageIconUrl>http://gatewayprogramming.school/gps.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/gatewayprogrammingschool/SimpleExtensions</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Extension-Methods</PackageTags>
+    <Copyright>2017-2018 - Gateway Programming School, Inc.</Copyright>
+    <Description>Collection of extension methods for usage in your projects that help deal with reflection, assertions and collections.</Description>
+    <Version>2.1.0</Version>
+    <Authors>The Sharp Ninja</Authors>
+    <Company>Gateway Programming School, Inc.</Company>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Added new asssertions.</PackageReleaseNotes>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DBNullExtensions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReflectionExtensions.cs" />
-    <Compile Include="StringManipulationExtensions.cs" />
-    <Compile Include="ValidationExtensions.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="paket.references" />
-    <None Include="paket.template" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

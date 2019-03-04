@@ -1,4 +1,17 @@
-Version 1.0.0.1
-SharpNinja
+# Release Notes
+
+## Version 2.1.0.0
+_SharpNinja_
+
+* Removed Paket format
+* Added new assertions
+
+## Version 2.0.0.0
+_SharpNinja_
+
+* Targets Net Standard 2.0
+
+## Version 1.0.0.1
+_SharpNinja_
 
 * Converted to Paket format

@@ -1,37 +1,26 @@
-function Deploy-Package
-{
-    param(
-        [Parameter(Mandatory=$true)][string]$SolutionDir,
-        [Parameter(Mandatory=$true)][string]$BuildDir,
-        [Parameter(Mandatory=$true)][string]$Namespace,
-        [Parameter(Mandatory=$true)][string]$Assembly
-    )	
+param(
+    [Parameter(Mandatory = $true)][string]$SolutionDir,
+    [Parameter(Mandatory = $true)][string]$Namespace,
+    [Parameter(Mandatory = $false)][string]$Source = "http://localhost:81/nuget/GPS/"
+)	
 
-    $proj = $SolutionDir + '\' + $Namespace + '\' + $Namespace + '.csproj'
-	$assm = $BuildDir + '\' + $Assembly
+$ProjectFile = $SolutionDir + "\\" + $Namespace + "\\" + $Namespace + ".csproj";
+$xml = [xml](Get-Content -Path $ProjectFile);
+$VersionNumber = $xml.Project.PropertyGroup.Version
+#$releaseNotes = [IO.File]::ReadAllText($SolutionDir + "\ReleaseNotes.txt")
+$destination = $SolutionDir + "\" + $Namespace + "\bin\Debug\" + [System.String]::Format("{0}.{1}.nupkg", $Namespace, $VersionNumber);
 
-&    "F:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\amd64\msbuild.exe" $proj /p:Configuration=Release
+dotnet pack $ProjectFile --include-source
 
-	if($LASTEXITCODE -eq 0) {
-
-
-		$AssemblyVersion = 
-			[Diagnostics.FileVersionInfo]::GetVersionInfo($assm).FileVersion
+if ($?) {
+    Write-Host $Source
     
-		$packageName = $Namespace +'.' +$AssemblyVersion+'.nupkg'
-		$package = $BuildDir +'\' +$packageName
-		$destination = $BuildDir + '\' + $packageName + "\" + $packageName
-		$sourceDestination = $BuildDir + '\' + $packageName + "\" + $Namespace +'.' +$AssemblyVersion+'.symbols.nupkg'
-		Set-Location $SolutionDir
-
-		$releaseNotes = [IO.File]::ReadAllText($SolutionDir + "\ReleaseNotes.txt")
-
-		.paket/paket.exe pack --release-notes $releaseNotes --symbols -v $package
-		Paket-Push -File $destination -ApiKey $env:NugetAPIKey -url https://www.nuget.org -endpoint /api/v2/package -Verbose
-	}
+    if($Source.Contains("localhost"))
+    {
+        dotnet nuget push $destination -k $env:LocalHostNugetAPIKey -s $Source
+    }
+    else 
+    {
+        dotnet nuget push $destination -k $env:NugetAPIKey -s $Source
+    }
 }
-
-Clear-Host
-
-#Deploy-Package -SolutionDir %1 -BuildDir %2 -Namespace %3 -Assembly %4
-Deploy-Package -SolutionDir 'F:\GPS\SimpleExtensions\SimpleExtensions' -BuildDir 'F:\GPS\SimpleExtensions\SimpleExtensions\GPS.SimpleExtensions\bin\Release' -Namespace "GPS.SimpleExtensions" -Assembly "GPS.SimpleExtensions.dll"

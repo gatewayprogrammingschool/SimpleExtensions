@@ -113,7 +113,6 @@ namespace GPS.SimpleExtensions
 
             return Activator.CreateInstance<T>();
         }
-
         #endregion
 
         /// <summary>
